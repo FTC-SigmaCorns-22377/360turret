@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.Math.TheArcaneConceptThatIsTurningInPlace.
 import org.firstinspires.ftc.teamcode.Robot.Subsystems.Dashboard;
 import org.firstinspires.ftc.teamcode.Robot.Subsystems.DistanceSensor;
 import org.firstinspires.ftc.teamcode.Robot.Subsystems.Drivetrain;
-import org.firstinspires.ftc.teamcode.visionPipelines.Pole;
+import org.firstinspires.ftc.teamcode.VisionUtils.Pole;
 
 import java.util.ArrayList;
 import java.util.function.BooleanSupplier;

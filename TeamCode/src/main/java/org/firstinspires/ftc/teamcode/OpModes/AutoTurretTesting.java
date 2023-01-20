@@ -13,7 +13,7 @@ public class AutoTurretTesting extends BaseAuto {
     @Override
     public Command setupAuto(CommandScheduler scheduler) {
         waitForStart();
-        return new TurretToBestCone(robot.scoringMechanism.turret, robot.vision, false, true, true, false, false);
+        return new TurretToBestCone(robot.scoringMechanism.turret, robot.backCamera, false, true);
     }
     @Override
     public Team getTeam() {

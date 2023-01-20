@@ -5,9 +5,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.CommandFramework.Subsystem;
-import org.firstinspires.ftc.teamcode.Robot.Subsystems.Dashboard;
 
 public class Turret extends Subsystem {
+	private final double turretTransfer = Math.toRadians(0);
+	private final double MIN_RAW_SERVO_ANGLE = 0;
+	private final double MAX_RAW_SERVO_ANGLE = .67;
+	private final double TAU = Math.PI * 2;
 
 	public double armDown = 0.05;
 
@@ -18,7 +21,6 @@ public class Turret extends Subsystem {
 	Servo claw;
 	double clawTransferPosition = 0.34;
 	double armSafe = 0.4;
-	double turretTransfer = 0.51889;
 	double currentFreeStateValue = 0;
 
 
@@ -91,34 +93,56 @@ public class Turret extends Subsystem {
 	public void setTurret(TurretStates turretStates) {
 		switch (turretStates) {
 			case TRANSFER:
-				setTurretPositionSync(turretTransfer);
-				break;
-			case Slight_LEFT:
-				setTurretPositionSync(1);
+				setBasedTurretPosition(turretTransfer);
 				break;
 			case Slight_RIGHT:
-				setTurretPositionSync(0);
-				break;
-			case Slight_RIGHT_AUTO:
-				setTurretPositionSync(0.0169);
-				break;
-			case FAR_LEFT:
-				setTurretPositionSync(0.9);
+				setBasedTurretPosition(Math.toRadians(30));
 				break;
 			case FAR_RIGHT:
-				setTurretPositionSync(0.1);
+				setBasedTurretPosition(Math.toRadians(60));
+				break;
+			case Slight_RIGHT_AUTO:
+				setBasedTurretPosition(Math.toRadians(35));
+				break;
+			case Slight_LEFT:
+				setBasedTurretPosition(Math.toRadians(-30));
+				break;
+			case FAR_LEFT:
+				setBasedTurretPosition(Math.toRadians(-60));
 				break;
 		}
 	}
 
-	public void setTurretPositionSync(double position) {
-		position = Range.clip(position,-1,1);
+	private void setRawTurretPosition(double position) {
+		position = Range.clip(position, MIN_RAW_SERVO_ANGLE, MAX_RAW_SERVO_ANGLE);
 		turret.setPosition(position);
-		Dashboard.packet.put("RECIEVES POS", position);
+	}
+	private double getRawTurretPosition() { //TODO make private or protected
+		return turret.getPosition();
 	}
 
-	public double getTurretPosition() {
-		return turret.getPosition();
+	public void setBasedTurretPosition(double radians) {
+		radians = Range.clip(radians,0,TAU);
+		if (radians == 0 || radians == TAU) { // turn to 0/360 degrees the fastest way
+			double currentPosition = getBasedTurretPosition();
+			if (currentPosition > Math.PI) { // if current position is closer to 360 than 0, turn to 360
+				radians = TAU;
+			} else if (currentPosition < Math.PI) { // if current position is closer to 0 than 360, turn to 0
+				radians = 0;
+			}
+		}
+		setRawTurretPosition(radiansToServo(radians));
+	}
+	public double getBasedTurretPosition() {
+		return servoToRadians(getRawTurretPosition());
+	}
+
+	private double radiansToServo(double radians) {
+		return Range.scale(radians,0,Math.PI * 2, MIN_RAW_SERVO_ANGLE, MAX_RAW_SERVO_ANGLE);
+	}
+
+	private double servoToRadians(double servoAngle) {
+		return Range.scale(servoAngle, MIN_RAW_SERVO_ANGLE, MAX_RAW_SERVO_ANGLE,0,TAU);
 	}
 
 	public void setArmPositionSync(double position) {

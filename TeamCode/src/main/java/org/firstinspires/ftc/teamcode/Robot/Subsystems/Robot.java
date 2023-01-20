@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.CommandFramework.CommandScheduler;
 import org.firstinspires.ftc.teamcode.Robot.Subsystems.ScoringMechanism.MainScoringMechanism;
+import org.firstinspires.ftc.teamcode.Robot.Subsystems.Vision.BackCamera;
+import org.firstinspires.ftc.teamcode.Robot.Subsystems.Vision.FrontCamera;
 import org.firstinspires.ftc.teamcode.Simulation.TestCommandsSubsystems.PrintSubsystem1;
 import org.firstinspires.ftc.teamcode.Utils.Team;
 
@@ -25,7 +27,8 @@ public class Robot {
 	public Drivetrain drivetrain = new Drivetrain();
 	public MainScoringMechanism scoringMechanism = new MainScoringMechanism();
 	public FieldMap field = new FieldMap();
-	public Vision vision;
+	public FrontCamera frontCamera;
+	public BackCamera backCamera;
 
 	// print subsystem for testing
 	public PrintSubsystem1 print = new PrintSubsystem1();
@@ -34,8 +37,9 @@ public class Robot {
 
 	ArrayList<LynxModule> modules = new ArrayList<>() ;
 	public Robot(HardwareMap hwMap, OpMode opMode, Gamepad gamepad1, Gamepad gamepad2, Team team) {
-		vision = new Vision(team);
-		scheduler = new CommandScheduler(hwMap, drivetrain, dashboard, scoringMechanism, field, vision);
+		frontCamera = new FrontCamera();
+		backCamera = new BackCamera(team);
+		scheduler = new CommandScheduler(hwMap, drivetrain, dashboard, scoringMechanism, field, frontCamera, backCamera);
 		this.gamepad1 = new Input(gamepad1, scheduler);
 		this.gamepad2 = new Input(gamepad2, scheduler);
 

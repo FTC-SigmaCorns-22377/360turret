@@ -20,7 +20,7 @@ public class MoveTurretDirect extends Command {
 
     @Override
     public void init() {
-        turret.setTurretPositionSync(angle);
+        turret.setBasedTurretPosition(angle);
         timer.reset();
     }
 
